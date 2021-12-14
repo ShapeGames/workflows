@@ -20,11 +20,10 @@
       "enabled": false
     },
     {
-      groupName: "ShapeGames",
-      matchPackagePrefixes: [
+      "groupName": "ShapeGames",
+      "matchPackagePrefixes": [
         "@shapegames/"
       ]
     }
-    
   ]
 }
