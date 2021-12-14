@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "prCreation": "immediate",
+  "prHourlyLimit": 0,
+  "ignorePaths": ["packages/**"],
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "packagePatterns": ["typescript"],
+      "enabled": false
+    },
+    {
+      groupName: "ShapeGames",
+      matchPackagePrefixes: [
+        "@shapegames/"
+      ]
+    }
+    
+  ]
+}
