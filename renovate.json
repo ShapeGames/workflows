@@ -5,6 +5,15 @@
   "prCreation": "immediate",
   "prHourlyLimit": 0,
   "ignorePaths": ["packages/**"],
+  "hostRules": [
+    {
+      "matchHost": "https://npm.pkg.github.com/",
+      "hostType": "npm",
+      "encrypted": {
+        "token": "wcFMAwJaXMpssR7IARAAuT9KGsaDIe/HZb1XI7XybB7qgoiBNjqRSTeLOhDk7vkR0WipQryMwtQayAnE4Db80HC7ScQEj3L5+9yBgECeiHBXG5m1gztTE54Czn9JED4ufgdrMCOOus1lQyqwBsbqRilFcYsuHvz7k+dPAm0Wnp1mKHWP5dm2gLKgGvE6GLJl1OSI8DOsB/g9QxdagjmMX0moazycNnt5AshdnbFOYvtQJFFkVVd/41/ezUyIKfDIO1OAiDvlsqZIbTn/SyMLGWXKoneB2dASPT3/s9c5RBJiKr1VcQ5yF+t7Y26fz7ORuO1UZ0INu5Efv/uvFRKQK2o79jWIWUrzgieB5impqCSYpBWaEI7Fx6ROsLVtaeUhX+y1/XH/9Msi0AColA/0Pu1D4uTtNqNg2ESknLYZakLlE1o4RYc1vbe72QeRlJXEyXWD2y0eOQC0SPBuYDtZukqtp1+nutylkf/BiMdYrKsb+UwDBHGaJxrM1Wc7Lvf/K+KqxqsVkAx66KXys/TdXgJ+KwJVKf4KhWOfG+ms6Ec30moAHnZqCX/artMgP2fgGp+Aw70rahyFw5Pq9wFsO0aCAASJ5XqfZNyczHBivzhO3oSTKBKXorSBKeYvrdNDVdX5zL4S9wXwt5gEgfQ2a3KYoqrI07XUxX1P1fmx/KsZQB5bvUazwHP0rwjwE6fSeQFMLoi6N1P1d3Q08NrqC8q1oYLQJB9ljwnNI3bu5OZmg2cZ8VfDgFvsH0bUHHA3C8qGH48eYjGl+PTEkh1W77HdAAH0G48Sf/4bBRKOqs+KkiBF4SMWLxu1NpvYyM2tvasBrj6/bMkpJHmuq9yTTs8XjpLCpVBjY0s"
+      }
+    }
+  ],
   "packageRules": [
     {
       "matchDatasources": [
