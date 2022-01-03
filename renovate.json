@@ -8,7 +8,7 @@
   "hostRules": [
     {
       "matchHost": "https://npm.pkg.github.com/",
-      "hostType": "npm"
+      "hostType": "npm",
       "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
     }
   ],
