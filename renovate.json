@@ -8,12 +8,10 @@
   "hostRules": [
     {
       "matchHost": "https://npm.pkg.github.com/",
-      "hostType": "npm",
-      "encrypted": {
-        "token": "wcFMA1fKSEPGHd96ARAAjcBYz0BvX1oXu9fpebN/NI486HNavB4CIOwpDz01V2DoydznlIcbg5eZBw2fdhBuefjLNQJ4fF8POkBoTSO1viKSa2P1zU/jzAyPrftW6ztM6UE7YzBKfXiVkMBYly7IIOOYwWriDg8UsCP+WiyLaYYECSqwWr6Z71FeLE/EdyrkR/qClWawVFsWmmAt1a5evnJRnuy1PevkbBkccjZJ8oVt6C4pakLrNeKPymWl7z6LGJ+4O96/h/vDhEMdVsT/vsYId1YO1s27CRAnLmMK1sZUvuzLZuccNdf6csnr4Oi06f8Ti/lf3n+fNNQqMgux5O8HvVXNMoneVyM1QnbtgX4w0gmqbKQc1RhxSaeEbohGNqFaKCnhiSM+dGSdZIHV1lSjodIWNsRfLJvzZcEmd3grHhUnUH1IbHhpvaVaRqA3jNmg0ZRmj9+r2GCNe2wcBNjvIqnFRej7fKd6OGnCMr/BUEZnG7Bgng1SVl85ZC6a1dW+QEgY426jDv7lc9pwepbooyMIFK5zPM/Bu/njKPX0+ONFlQGqnRVR2nxDeFJGbAFUoevJ5u/x4/Aiovnokr9elSj1elUG+v7mqfswr2zJQ+rRT73a5GXZRb4Ic2S5FN+E/e0tBPuY8E4pbjbmdtiab4l3SzsWJ9cGRjcnCFhWGxGFH65GRHtcrVHywKfSeQGjIsc8Sn9RNnpP428Gd14xFKLUtKPu31Dpbu8wgioZeEHZFF9qeRiLYB2a/HwolNG+PIWxD0GfdAf8HaOmiyEsmgCdHuxxcirL3A+He/PdhA6/bL1Fkp+QnlW85I9CS6WhNc1fFpE/L9t5h+wLi8hPcUCueNITlTI"
-      }
+      "hostType": "npm"
     }
   ],
+  "npmrcMerge": true,
   "packageRules": [
     {
       "matchDatasources": [
