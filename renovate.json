@@ -9,6 +9,7 @@
     {
       "matchHost": "https://npm.pkg.github.com/",
       "hostType": "npm"
+      "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
     }
   ],
   "npmrcMerge": true,
