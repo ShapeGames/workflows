@@ -2,12 +2,14 @@ name: Release Workflow
 on:
   workflow_call:
     secrets:
-      github_token:
+      gh_token:
         required: true
     inputs:
       release_branches:
         required: true
+        type: string
       pre_release_branches:
+        type: string
         required: true
 jobs:
   build:
