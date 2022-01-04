@@ -12,7 +12,6 @@
       "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
     }
   ],
-  "npmrcMerge": true,
   "packageRules": [
     {
       "matchDatasources": [
