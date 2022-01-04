@@ -12,6 +12,7 @@
       "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
     }
   ],
+  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
   "packageRules": [
     {
       "matchDatasources": [
