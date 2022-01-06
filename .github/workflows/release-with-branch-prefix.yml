@@ -1,3 +1,21 @@
+#
+# This workflow enables semantic releases with support for prereleases
+#
+# When you specify staging and preprod with the pre_release_branches variable and adding a commit on a pre-release branch
+# the tagged version will be vX.X.X-{branch}.N
+# 
+# This enables a tag workflow where you can see the following:
+#
+# Example:
+# v1.0.0-staging.0 <- commit on staging
+# v1.0.0-staging.1 <- commit on staging
+# v1.0.0-preprod.0 <- commit on preprod
+# v1.0.0           <- commit on master/main
+# v1.1.0-staging.0 <- commit on staging
+#
+# When tagging a commit it will also create a release with a changelog
+# 
+
 name: Release Workflow
 
 on:
