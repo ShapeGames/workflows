@@ -1,3 +1,4 @@
+# This workflows enables bumping minor version by tagging and updating package.json
 name: Bump Workflow
 
 on:
