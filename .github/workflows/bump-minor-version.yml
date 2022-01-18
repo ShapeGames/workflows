@@ -17,6 +17,6 @@ jobs:
         uses:  'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
-          GITHUB_EMAIL: ${{ secrets.email }}
+          GITHUB_EMAIL: ${{ secrets.gh_email }}
         with:
           default: minor
