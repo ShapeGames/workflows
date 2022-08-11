@@ -15,9 +15,4 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
       - run: yarn build
       - run: yarn test
-      - uses: actions/upload-artifact@v1
-        if: success()
-        with:
-          name: bundle-client.html
-          path: .next/public/bundle-client.html
  
