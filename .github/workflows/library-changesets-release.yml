@@ -3,7 +3,7 @@ on:
     secrets:
       gh_packages_token:
         required: true
-      github_token:
+      gh_token:
         required: true
 jobs:
   release:
@@ -36,4 +36,4 @@ jobs:
           commit: "ci(root): release versions"
           publish: pnpm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
