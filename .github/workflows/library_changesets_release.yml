@@ -1,0 +1,39 @@
+on:
+  workflow_call:
+    secrets:
+      gh_packages_token:
+        required: true
+      github_token:
+        required: true
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    env:
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install PNPM
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm run version
+          title: "ci(root): release versions"
+          commit: "ci(root): release versions"
+          publish: pnpm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
