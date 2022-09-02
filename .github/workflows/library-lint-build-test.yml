@@ -1,0 +1,45 @@
+on:
+  workflow_call:
+    secrets:
+      gh_packages_token:
+        required: true
+      turbo_token:
+        required: false
+      turbo_team:
+        required: false
+jobs:
+  build:
+    name: Build, Lint and Test
+    runs-on: "ubuntu-latest"
+    env:
+      TURBO_TOKEN: ${{ secrets.turbo_token }}
+      TURBO_TEAM: ${{ secrets.turbo_team }}
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
