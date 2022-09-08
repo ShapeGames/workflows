@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "prCreation": "immediate",
+  "prHourlyLimit": 0,
+  "ignorePaths": ["packages/**"],
+  "hostRules": [
+    {
+      "matchHost": "https://npm.pkg.github.com/",
+      "hostType": "npm",
+      "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
+    }
+  ],
+  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "packagePatterns": ["typescript"],
+      "enabled": false
+    }
+  ]
+}
