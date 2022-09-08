@@ -4,8 +4,6 @@ on:
     secrets:
       token:
         required: true
-      encryption_key:
-        required: true
       repos:
         required: true
 jobs:
