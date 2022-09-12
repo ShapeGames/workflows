@@ -19,4 +19,5 @@ jobs:
           token: ${{ secrets.token }}
         env:
           LOG_LEVEL: 'debug'
-          RENOVATE_REPOSITORIES: ${{secrets.repos }}
+          RENOVATE_REPOSITORIES: ${{ secrets.repos }}
+          GH_PACKAGES_TOKEN: ${{ secrets.token }}
