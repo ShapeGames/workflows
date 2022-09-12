@@ -4,5 +4,4 @@
   ],
   "prCreation": "immediate",
   "prHourlyLimit": 0,
-  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/"
 }
