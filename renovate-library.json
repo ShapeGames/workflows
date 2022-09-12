@@ -3,5 +3,5 @@
     "config:base"
   ],
   "prCreation": "immediate",
-  "prHourlyLimit": 0,
+  "prHourlyLimit": 0
 }
