@@ -2,6 +2,14 @@
   "extends": [
     "config:base"
   ],
+  "hostRules": [
+    {
+      "matchHost": "https://npm.pkg.github.com/",
+      "hostType": "npm",
+      "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
+    }
+  ],
+  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
   "prCreation": "immediate",
   "prHourlyLimit": 0,
   "exposeAllEnv": true
