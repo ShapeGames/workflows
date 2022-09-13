@@ -11,5 +11,5 @@
   "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
   "prCreation": "immediate",
   "prHourlyLimit": 0,
-  "exposeAllEnv": true
+  "detectHostRulesFromEnv": true
 }
