@@ -2,7 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "npmrcMerge": true
+  "npmrcMerge": true,
   "prCreation": "immediate",
   "prHourlyLimit": 0
 }
