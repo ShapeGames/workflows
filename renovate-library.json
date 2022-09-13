@@ -5,8 +5,7 @@
   "hostRules": [
     {
       "matchHost": "https://npm.pkg.github.com/",
-      "hostType": "npm",
-      "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
+      "hostType": "npm"
     }
   ],
   "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
