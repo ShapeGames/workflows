@@ -2,14 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "hostRules": [
-    {
-      "matchHost": "https://npm.pkg.github.com/",
-      "hostType": "npm"
-    }
-  ],
-  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
+  "npmrcMerge": true
   "prCreation": "immediate",
-  "prHourlyLimit": 0,
-  "detectHostRulesFromEnv": true
+  "prHourlyLimit": 0
 }
