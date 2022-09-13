@@ -21,3 +21,4 @@ jobs:
           LOG_LEVEL: 'debug'
           RENOVATE_REPOSITORIES: ${{ secrets.repos }}
           GH_PACKAGES_TOKEN: ${{ secrets.token }}
+          RENOVATE_SECRETS__GITHUB_NPM_ACCESS_TOKEN: ${{ secrets.token }}
