@@ -3,5 +3,13 @@
     "config:base"
   ],
   "prCreation": "immediate",
-  "prHourlyLimit": 0
+  "prHourlyLimit": 0,
+  "hostRules": [
+    {
+      "matchHost": "https://npm.pkg.github.com/",
+      "hostType": "npm",
+      "token": "{{ secrets.GITHUB_NPM_ACCESS_TOKEN }}"
+    }
+  ],
+  "npmrc": "@shapegames:registry=https://npm.pkg.github.com/",
 }
