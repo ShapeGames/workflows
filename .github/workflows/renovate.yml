@@ -8,6 +8,7 @@ on:
         required: true
 jobs:
   renovate:
+    concurrency: ci-${{ github.workflow }}-${{ github.repository }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
