@@ -41,9 +41,6 @@ jobs:
       - name: Merge lint reports
         run: jq -s '[.[]]|flatten' eslint-reports/*.json &> eslint-reports/eslint_report.json
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-
       - name: Annotate Code Linting Results
         uses: ataylorme/eslint-annotate-action@v2
         with:
