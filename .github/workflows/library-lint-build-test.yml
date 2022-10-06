@@ -39,7 +39,7 @@ jobs:
         run: pnpm lint
         
       - name: Merge lint reports
-        run: jq -s '[.[]]|flatten' eslint-reports/*.json &> eslint_report.json
+        run: jq -s '[.[]]|flatten' eslint-reports/*.json &> eslint-reports/eslint_report.json
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
@@ -48,7 +48,9 @@ jobs:
         uses: ataylorme/eslint-annotate-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          report-json: "./lint-results/eslint_report.json"
           only-pr-files: false
+          
 
       - name: Upload ESLint report
         if: ${{ always() }}
