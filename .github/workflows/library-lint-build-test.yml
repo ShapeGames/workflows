@@ -37,6 +37,7 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+        continue-on-error: true
         
       - name: Merge lint reports
         run: jq -s '[.[]]|flatten' eslint-reports/*.json &> eslint-reports/eslint_report.json
