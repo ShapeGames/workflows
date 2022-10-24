@@ -30,7 +30,7 @@
     {
        "groupName": "ShapeGames",
        "matchPackagePrefixes": [
-         "@shapegames/"
+         "@shapegames/",
          "^@shapegames/web-library"
        ]
      }
