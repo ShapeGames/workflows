@@ -26,12 +26,6 @@
     {
       "packagePatterns": ["typescript"],
       "enabled": false
-    },
-    {
-      "groupName": "ShapeGames",
-      "matchPackagePrefixes": [
-        "@shapegames/"
-      ]
     }
   ]
 }
