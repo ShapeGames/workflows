@@ -26,6 +26,13 @@
     {
       "packagePatterns": ["typescript"],
       "enabled": false
-    }
+    },
+    {
+       "groupName": "ShapeGames",
+       "matchPackagePrefixes": [
+         "@shapegames/"
+         "^@shapegames/web-library"
+       ]
+     }
   ]
 }
