@@ -2,6 +2,7 @@
   "extends": [
     "config:base"
   ],
+  "npmrcMerge": true,
   "prCreation": "immediate",
   "prHourlyLimit": 0,
   "ignorePaths": ["packages/**"],
