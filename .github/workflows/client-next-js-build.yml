@@ -1,5 +1,8 @@
 on:
   workflow_call:
+    secrets:
+      HOST_ENV:
+        required: false
 jobs:
   build:
     runs-on: ubuntu-latest
