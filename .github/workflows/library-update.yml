@@ -1,0 +1,60 @@
+name: Check for library template updates
+
+on:
+  workflow_call:
+    inputs:
+      script:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+
+      - name: Create and switch to new branch
+        run: |
+          git checkout -b feat/template_update
+          git push --set-upstream origin new-branch
+
+      - name: Run the provided npm script
+        run: pnpm run ${{ inputs.script }}
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -n -m "feat: update from web-library-scripts" || echo "No changes to commit"
+          git push origin ${{ inputs.branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: update from web-library-scripts"
+          title: "feat: update from web-library-scripts"
+          branch: ${{ inputs.branch }}
+          base: "main"
+          delete-branch: true
+          draft: false
