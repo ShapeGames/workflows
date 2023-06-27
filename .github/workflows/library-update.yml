@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install PNPM
+      - name: Add PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 7
@@ -31,6 +31,9 @@ jobs:
         with:
           node-version: 18
           cache: "pnpm"
+          
+      - name: Install packages
+        run: pnpm install
 
       - name: Run the provided npm script
         run: pnpm run ${{ inputs.script }}
