@@ -37,8 +37,7 @@ jobs:
         
       - name: Setup git https auth
         run: |
-          git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ${{ secrets.write_github_token }}
-
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${{ secrets.write_github_token }}"
       - name: Run the provided npm script
         run: pnpm run ${{ inputs.script }}
         
