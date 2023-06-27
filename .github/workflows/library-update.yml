@@ -48,4 +48,3 @@ jobs:
           branch: ${{ inputs.branch }}
           base: "main"
           delete-branch: true
-          draft: false,
