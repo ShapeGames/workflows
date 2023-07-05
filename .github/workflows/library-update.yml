@@ -29,16 +29,16 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "pnpm"
-          
+
       - name: Install packages
         run: pnpm install
-        
+
       - name: Setup git https auth
         run: |
           git config --global user.name "${{ secrets.git_username }}"
@@ -46,7 +46,7 @@ jobs:
           git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${{ secrets.write_github_token }}"
       - name: Run the provided npm script
         run: pnpm run ${{ inputs.script }}
-        
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
