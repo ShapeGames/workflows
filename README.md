@@ -1,6 +1,6 @@
 # Public Github Action workflows
 
-:warning: Do not commit any sesitive information like API-keys or similar :warning:
+:warning: Do not commit any sensitive information like API-keys or similar :warning:
 
 ## Release rules
 
