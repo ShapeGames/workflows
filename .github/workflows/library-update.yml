@@ -40,7 +40,7 @@ jobs:
         run: pnpm install
 
       - name: Configure git
-        uses: xiplias/github-git-config-action@v1
+        uses: xiplias/github-git-config-action@v2
         with:
           user.name: ${{ secrets.git_username }}
           user.email: ${{ secrets.git_email }}
@@ -51,7 +51,7 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        uses: ShapeGames/create-pull-request-v5-modified@v5-modified
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.write_github_token }}
           commit-message: "feat: update from web-library-scripts"
