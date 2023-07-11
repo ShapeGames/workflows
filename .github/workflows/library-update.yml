@@ -45,9 +45,7 @@ jobs:
           user.name: ${{ secrets.git_username }}
           user.email: ${{ secrets.git_email }}
           github-token: ${{ secrets.write_github_token }}
-
-      - name: Run the provided npm script
-        run: pnpm run ${{ inputs.script }}
+          command: pnpm run ${{ inputs.script }}
 
       - name: Create Pull Request
         id: cpr
