@@ -50,7 +50,8 @@ jobs:
         run: pnpm run ${{ inputs.script }}
 
       - name: remove git config
-        run: git config --local --unset-all http.https://github.com/.extraHeader
+        run: |
+          git config --local --unset-all http.https://github.com/.extraHeader ^AUTHORIZATION: basic
 
       - name: Create Pull Request
         id: cpr
