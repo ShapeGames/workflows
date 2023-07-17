@@ -49,6 +49,9 @@ jobs:
       - name: run script
         run: pnpm run ${{ inputs.script }}
 
+      - name: cat
+        run: cat .git/config
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
