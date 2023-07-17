@@ -48,6 +48,9 @@ jobs:
       
       - name: run script
         run: pnpm run ${{ inputs.script }}
+      
+      - name: PNPM update lock
+        run: pnpm install
 
       - name: remove git config
         run: |
