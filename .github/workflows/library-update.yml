@@ -64,7 +64,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.write_github_token }}
-          commit-message: "chore: ${{ inputs.title }}"
+          commit-message: ${{ inputs.title }}
           title: ${{ inputs.title }}
           branch: ${{ inputs.branch }}
           base: "main"
