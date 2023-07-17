@@ -40,12 +40,14 @@ jobs:
         run: pnpm install
 
       - name: Configure git
-        uses: xiplias/github-git-config-action@v2
+        uses: xiplias/github-git-config-action@v1
         with:
           user.name: ${{ secrets.git_username }}
           user.email: ${{ secrets.git_email }}
           github-token: ${{ secrets.write_github_token }}
-          command: pnpm run ${{ inputs.script }}
+      
+      - name: run script
+        run: pnpm run ${{ inputs.script }}
 
       - name: Create Pull Request
         id: cpr
