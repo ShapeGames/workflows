@@ -49,8 +49,8 @@ jobs:
       - name: run script
         run: pnpm run ${{ inputs.script }}
 
-      - name: cat
-        run: cat .git/config
+      - name: remove git config
+        run: git config --local --unset-all http.https://github.com/.extraHeader
 
       - name: Create Pull Request
         id: cpr
