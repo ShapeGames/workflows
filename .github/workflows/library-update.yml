@@ -9,6 +9,9 @@ on:
       branch:
         required: true
         type: string
+      title:
+        required: true
+        type: string
     secrets:
       write_github_token:
         required: true
@@ -61,8 +64,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.write_github_token }}
-          commit-message: "feat: update from web-library-scripts"
-          title: "feat: update from web-library-scripts"
+          commit-message: "chore: ${{ inputs.title }}"
+          title: ${{ inputs.title }}
           branch: ${{ inputs.branch }}
           base: "main"
           delete-branch: true
