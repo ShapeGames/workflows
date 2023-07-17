@@ -40,7 +40,7 @@ jobs:
         run: pnpm install
 
       - name: Configure git
-        uses: xiplias/github-git-config-action@v1
+        uses: xiplias/github-git-config-action@v2
         with:
           user.name: ${{ secrets.git_username }}
           user.email: ${{ secrets.git_email }}
