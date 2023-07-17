@@ -51,7 +51,7 @@ jobs:
 
       - name: remove git config
         run: |
-          git config --local --unset-all http.https://github.com/.extraHeader "^AUTHORIZATION: basic"
+          git config --unset-all http.https://github.com/.extraHeader "^AUTHORIZATION: basic"
 
       - name: Create Pull Request
         id: cpr
