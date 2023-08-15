@@ -15,6 +15,8 @@
 fix(pencil): stop graphite breaking when too much pressure applied
 ```
 
+⚠️If no pattern in found it will default to patch release ⚠️
+
 </td>
 <td>Patch Release</td>
 </tr>
@@ -22,6 +24,7 @@ fix(pencil): stop graphite breaking when too much pressure applied
 <td>
 
 ```
+
 feat(pencil): add 'graphiteWidth' option
 ```
 
