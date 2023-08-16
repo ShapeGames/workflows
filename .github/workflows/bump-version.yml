@@ -6,17 +6,21 @@ on:
     secrets:
       gh_token:
         required: true
-      gh_email: 
+      gh_email:
         required: true
+    inputs:
+      semver_bump:
+        type: string
+        default: minor
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name:  'Automated Version Bump'
-        uses:  'phips28/gh-action-bump-version@master'
+        uses:  'ShapeGames/gh-action-bump-version@v10.0.1'
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
           GITHUB_EMAIL: ${{ secrets.gh_email }}
         with:
-          default: minor
+          default: ${{ inputs.semver_bump }}
