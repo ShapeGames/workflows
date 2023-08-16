@@ -36,6 +36,12 @@ on:
       semver_bump:
         type: string
         default: minor
+      skipCommit:
+        type: string
+        default: 'false'
+      skipTag:
+        type: string
+        default: 'false'
 jobs:
   bump:
     runs-on: ubuntu-latest
@@ -48,3 +54,5 @@ jobs:
           GITHUB_EMAIL: ${{ secrets.gh_email }}
         with:
           default: ${{ inputs.semver_bump }}
+          skip-commit: ${{ inputs.skipCommit }}
+          skip-tag: ${{ inputs.skipTag }}
