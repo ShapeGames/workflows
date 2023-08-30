@@ -7,6 +7,13 @@ on:
         required: true
       docker_password:
         required: true
+    inputs:
+      HOST_ENV:
+        type: string
+        required: true
+      API_ENV: 
+        type: string
+        required: false
         
   
 env:
@@ -38,8 +45,11 @@ jobs:
           context: .
           load: true
           tags: ${{ env.TEST_TAG }}
+          build-args: |
+            HOST_ENV=${{ inputs.HOST_ENV }}
+            API_ENV=${{ inputs.API_ENV }}
       -
-        name: Test
+        name: Start docker container
         run: |
           docker run --rm ${{ env.TEST_TAG }}
       - name: Check the deployed service URL
