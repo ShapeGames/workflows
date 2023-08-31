@@ -56,6 +56,8 @@ jobs:
         with:
           url: http://localhost:8080
           follow-redirect: true
+          max-attempts: 3
+          retry-delay: 5s
          
 
               
