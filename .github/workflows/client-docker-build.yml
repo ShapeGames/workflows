@@ -50,7 +50,7 @@ jobs:
       -
         name: Start docker container
         run: |
-          docker run --rm --detach ${{ env.TEST_TAG }}
+          docker run --rm --detach -p 8080:8080 ${{ env.TEST_TAG }}
       - name: Check the deployed service URL
         uses: ShapeGames/url-health-check-action@v3
         with:
