@@ -3,6 +3,9 @@ on:
     secrets:
       HOST_ENV:
         required: false
+      RELATIVE_CI_KEY:
+        required: false
+      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
       - uses: ShapeGames/npm-install@v1.8.34
       - uses: actions/cache@v3
         with:
