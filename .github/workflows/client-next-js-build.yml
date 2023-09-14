@@ -18,7 +18,8 @@ jobs:
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
-      - run: yarn build
+      - name: yarn build
+        run: yarn build
         env:
           RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
       - run: yarn test
