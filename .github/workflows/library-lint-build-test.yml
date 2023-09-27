@@ -7,6 +7,10 @@ on:
         required: false
       turbo_team:
         required: false
+    inputs:
+      node-version:
+        type: string
+        default: '18'
 jobs:
   build:
     name: Build, Lint and Test
@@ -29,7 +33,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ inputs.node-version }}
           cache: "pnpm"
 
       - name: Install dependencies
