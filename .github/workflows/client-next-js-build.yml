@@ -5,7 +5,10 @@ on:
         required: false
       RELATIVE_CI_KEY:
         required: false
-      
+    inputs:
+      node_version: 
+        type: string
+        default: 16
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ inputs.node_version }}
       - uses: ShapeGames/npm-install@v1.8.34
       - uses: actions/cache@v3
         with:
