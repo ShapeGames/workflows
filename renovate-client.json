@@ -17,12 +17,13 @@
       "enabled": false
     },
     {
-      "packagePatterns": ["typescript"],
+      "packagePatterns": ["typescript", "next"],
       "enabled": false
     },
     {
       "groupName": "ShapeGames",
       "excludePackagePatterns": ["^@shapegames/web-library"],
+      "prPriority": 5,
       "matchPackagePrefixes": [
         "@shapegames/"
       ]
