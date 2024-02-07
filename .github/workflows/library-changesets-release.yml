@@ -5,12 +5,18 @@ on:
         required: true
       gh_token:
         required: true
+      federation_action_key_id:
+        required: false
+      federation_secret_key:
+        required: false
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     env:
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      FEDERATION_ACCESS_KEY_ID: ${{ secrets.federation_action_key_id }}
+      FEDERATION_SECRET_KEY: ${{ secrets.federation_secret_key }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
