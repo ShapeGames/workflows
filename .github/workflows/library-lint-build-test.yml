@@ -19,6 +19,7 @@ jobs:
       TURBO_TOKEN: ${{ secrets.turbo_token }}
       TURBO_TEAM: ${{ secrets.turbo_team }}
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
