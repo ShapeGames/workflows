@@ -13,6 +13,7 @@ on:
         default: '18'
 jobs:
   build_packages:
+    timeout-minutes: 10
     name: Build npm package
     runs-on: "ubuntu-latest"
     env:
@@ -43,6 +44,7 @@ jobs:
       - name: Build package build
         run: pnpm run build
   build_federation:
+    timeout-minutes: 10
     name: Build federation package
     runs-on: "ubuntu-latest"
     env:
@@ -73,6 +75,7 @@ jobs:
       - name: Build federation
         run: pnpm run build-federation
   test:
+    timeout-minutes: 10
     name: Lint and Test
     runs-on: "ubuntu-latest"
     env:
