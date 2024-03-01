@@ -39,6 +39,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+      
+      - name: Build package build
+        run: pnpm build
   build_federation:
     name: Build federation package
     runs-on: "ubuntu-latest"
@@ -67,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install dependencies
+      - name: Build federation
         run: pnpm build-federation
   test:
     name: Lint and Test
