@@ -12,8 +12,35 @@ on:
         type: string
         default: '18'
 jobs:
-  build:
-    name: Build, Lint and Test
+  build_packages:
+    name: Build npm package
+    runs-on: "ubuntu-latest"
+    env:
+      TURBO_TOKEN: ${{ secrets.turbo_token }}
+      TURBO_TEAM: ${{ secrets.turbo_team }}
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+  build_federation:
+    name: Build federation package
     runs-on: "ubuntu-latest"
     env:
       TURBO_TOKEN: ${{ secrets.turbo_token }}
@@ -40,8 +67,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm build
+      - name: Install dependencies
+        run: pnpm build-federation
+  test:
+    name: Lint and Test
+    runs-on: "ubuntu-latest"
+    env:
+      TURBO_TOKEN: ${{ secrets.turbo_token }}
+      TURBO_TEAM: ${{ secrets.turbo_team }}
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Lint
         run: pnpm lint
