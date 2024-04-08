@@ -23,7 +23,8 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-
+    env:
+      NPM_TOKEN: ${{ secrets.write_github_token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
