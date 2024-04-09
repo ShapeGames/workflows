@@ -3,6 +3,13 @@
     "config:base",
     ":preserveSemverRanges"
   ],
+  "hostRules": [
+    {
+      "hostType": "npm",
+      "matchHost": "npm.pkg.github.com",
+      "token": "{{ env.NPM_TOKEN }}"
+    }
+  ],
   "npmrcMerge": true,
   "prCreation": "immediate",
   "prHourlyLimit": 0
