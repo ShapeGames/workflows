@@ -5,10 +5,6 @@ on:
         required: true
       gh_token:
         required: true
-      federation_access_key_id:
-        required: false
-      federation_secret_key:
-        required: false
 jobs:
   release:
     name: Release
@@ -16,8 +12,6 @@ jobs:
     env:
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.federation_access_key_id }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.federation_secret_key }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
