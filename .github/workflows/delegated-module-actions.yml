@@ -1,0 +1,62 @@
+name: Delegated Module Actions
+
+on:
+  workflow_call:
+
+jobs:
+  platform_upload:
+    name: 'Upload Delegated Module (as web-platform)'
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.repository, 'ShapeGames/web-platform') }}
+    env:
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.federation_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.federation_secret_key }}
+      RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: ShapeGames/npm-install@v1.7.10
+        with:
+          useRollingCache: true
+      - name: Install dependencies
+        run: yarn install
+      - name: Build packages
+        run: yarn build
+      - name: Upload Delegated Modules
+        run: yarn exec lerna run federation:upload --stream
+
+  web_library_upload:
+    name: 'Upload Delegated Module (as web-library)'
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.repository, 'ShapeGames/web-library') }}
+    env:
+      GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.federation_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.federation_secret_key }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build packages
+        run: pnpm build
+      - name: Upload Delegated Modules
+        run: pnpm exec turbo run federation:upload
