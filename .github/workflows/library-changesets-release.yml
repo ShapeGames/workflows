@@ -18,14 +18,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install PNPM
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
+          cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
       - name: Create Release Pull Request or Publish to npm
@@ -33,8 +33,8 @@ jobs:
         uses: changesets/action@v1
         with:
           version: pnpm run version
-          title: "ci(root): release versions"
-          commit: "ci(root): release versions"
+          title: 'ci(root): release versions'
+          commit: 'ci(root): release versions'
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
