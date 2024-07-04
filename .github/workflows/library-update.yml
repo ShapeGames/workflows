@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Add PNPM
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v2.2.2
         with:
           version: 8
 
