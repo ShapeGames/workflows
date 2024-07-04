@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Add PNPM
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v4
         with:
           version: 8
 
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install packages
         run: pnpm install
@@ -68,5 +68,5 @@ jobs:
           commit-message: ${{ inputs.title }}
           title: ${{ inputs.title }}
           branch: ${{ inputs.branch }}
-          base: "main"
+          base: 'main'
           delete-branch: true
