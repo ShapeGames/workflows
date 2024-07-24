@@ -22,7 +22,15 @@ phases:
 
   post_build:
     commands:  
-      - echo "$PWD" | xargs -I {} pnpm --filter @shapegames/web-library-federation.delegate exec $SCRIPT_PATH {}
+      - |
+        if [ "$MODULE_TYPE" = "delegate" ]; then
+          SCRIPT="prepare_upload_delegate.js"
+        else
+          SCRIPT="prepare_upload.js"
+        fi
+      - export DELEGATED_MODULE_PATH=$(pnpm list --parseable --depth 0 @shapegames/web-library-federation.delegated-module | grep delegated-module)
+      - export ROOT_PATH=$(echo "$PWD")
+      - pnpm --filter @shapegames/web-library-federation.delegate exec $DELEGATED_MODULE_PATH/dist/$SCRIPT $ROOT_PATH
 
 artifacts:
   files:
