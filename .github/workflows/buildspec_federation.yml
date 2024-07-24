@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  parameter-store:
+    GH_PACKAGES_TOKEN: /cicd/github/packages-token
+    NPM_TOKEN: /cicd/github/packages-token
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g pnpm@8.15.4
+
+  pre_build:
+    commands:
+      - pnpm install
+
+  build:
+    commands:  
+      - pnpm run build
+
+  post_build:
+    commands:  
+      - echo "$PWD" | xargs -I {} pnpm --filter @shapegames/web-library-federation.delegate exec $SCRIPT_PATH {}
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: federation-dist
