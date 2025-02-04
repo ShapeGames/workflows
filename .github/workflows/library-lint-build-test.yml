@@ -89,10 +89,11 @@ jobs:
 
       - name: Upload ESLint report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: eslint-reports
           path: eslint-reports
+          overwrite: true
         continue-on-error: true
 
       - name: Build
