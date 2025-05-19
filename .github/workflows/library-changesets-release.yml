@@ -9,6 +9,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
     env:
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
@@ -38,3 +40,26 @@ jobs:
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
+
+  publish-kambi:
+    name: Publish to Kambi Artifactory
+    needs: release
+    if: needs.release.outputs.published == 'true'
+    runs-on: shape-games-kambi-hosted
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+          registry-url: 'https://artifactory.services.kambi.com/artifactory/api/npm/npm/'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Publish to Kambi Artifactory
+        run: pnpm publish
