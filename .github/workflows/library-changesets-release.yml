@@ -46,6 +46,8 @@ jobs:
     needs: release
     if: needs.release.outputs.published == 'true'
     runs-on: shape-games-kambi-hosted
+    env:
+      NPM_TOKEN: ${{ secrets.KAMBI_ARTIFACTORY_API_KEY }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -58,8 +60,7 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
-          registry-url: 'https://artifactory.services.kambi.com/artifactory/api/npm/npm/'
       - name: Install dependencies
         run: pnpm install
       - name: Publish to Kambi Artifactory
-        run: pnpm publish
+        run: pnpm publish --registry https://artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/
