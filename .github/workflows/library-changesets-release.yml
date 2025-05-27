@@ -52,8 +52,9 @@ jobs:
     runs-on: [shape-games-kambi-hosted-debian, dedicated-shape-games]
     env:
       GITHUB_TOKEN: ${{ secrets.gh_token }}
-      NPM_TOKEN: ${{ secrets.kambi_artifactory_api_key }}
+      NPM_TOKEN_KAMBI: ${{ secrets.kambi_artifactory_api_key }}
       NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
+      NPM_TOKEN: ${{secrets.gh_packages_token}}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -74,7 +75,7 @@ jobs:
       - name: Setup NPM config for Kambi registry
         run: |
           # # # Configure workspace .npmrc
-          echo "//artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/:_authToken=${NPM_TOKEN}" > .npmrc
+          echo "//artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/:_authToken=${NPM_TOKEN_KAMBI}" > .npmrc
           echo "registry=https://artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/" >> .npmrc
           echo "always-auth=true" >> .npmrc
 
