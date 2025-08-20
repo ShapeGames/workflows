@@ -21,6 +21,6 @@ jobs:
         env:
           LOG_LEVEL: 'debug'
           RENOVATE_REPOSITORIES: ${{ secrets.repos }}
-          GH_PACKAGES_TOKEN: ${{ secrets.token }}
+          GH_RENOVATE_TOKEN: ${{ secrets.token }}
           RENOVATE_EXPOSE_ALL_ENV: true
           NPM_TOKEN: ${{ secrets.token }}
