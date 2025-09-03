@@ -16,7 +16,7 @@ jobs:
       RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
     steps:
       - name: 'Checkout Repo'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -42,7 +42,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.federation_secret_key }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Install PNPM
