@@ -27,7 +27,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.write_github_token }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Add PNPM
         uses: pnpm/action-setup@v4
