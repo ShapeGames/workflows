@@ -1,4 +1,4 @@
-name: Bump version
+name: Tag and release production
 on:
   workflow_call:
     secrets:
@@ -6,7 +6,8 @@ on:
         required: true
   push:
     branches:
-      - test-prod
+      - main
+      - master
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.gh_token }}
-          tag_prefix: production-
+          tag_prefix: Prod-
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
