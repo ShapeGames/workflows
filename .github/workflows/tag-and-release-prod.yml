@@ -4,9 +4,6 @@ on:
     secrets:
       gh_token:
         required: true
-  push:
-    branches:
-      - main
 jobs:
   run:
     runs-on: ubuntu-latest
