@@ -20,7 +20,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Install PNPM
@@ -57,7 +57,7 @@ jobs:
       NPM_TOKEN: ${{secrets.gh_packages_token}}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install PNPM
         uses: pnpm/action-setup@v4
