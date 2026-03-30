@@ -10,7 +10,7 @@ on:
     inputs:
       node-version:
         type: string
-        default: '18'
+        default: '20'
 jobs:
   build_packages:
     timeout-minutes: 10
