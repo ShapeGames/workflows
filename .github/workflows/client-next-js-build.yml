@@ -31,3 +31,16 @@ jobs:
           RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
       - run: yarn test
  
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HOST_ENV: ${{ secrets.HOST_ENV }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+      - uses: ShapeGames/npm-install@v1.8.34
+      - name: yarn lint
+        run: yarn lint
