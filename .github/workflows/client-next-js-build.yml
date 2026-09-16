@@ -6,7 +6,7 @@ on:
       RELATIVE_CI_KEY:
         required: false
     inputs:
-      node_version: 
+      node_version:
         type: string
         default: 20
 jobs:
@@ -30,7 +30,6 @@ jobs:
         env:
           RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
       - run: yarn test
- 
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -42,5 +41,11 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
       - uses: ShapeGames/npm-install@v1.8.34
-      - name: yarn lint
-        run: yarn lint
+      - name: type-check
+        run: yarn tsc-check
+      - name: eslint
+        if: ${{ !cancelled() }}
+        run: yarn eslint-check
+      - name: stylelint
+        if: ${{ !cancelled() }}
+        run: yarn stylelint-check
