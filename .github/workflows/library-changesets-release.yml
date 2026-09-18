@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
       - name: Install PNPM
         run: |
-          corepack enable
+          corepack enable pnpm
           corepack prepare pnpm@10.12.3 --activate
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -61,7 +61,7 @@ jobs:
 
       - name: Install PNPM
         run: |
-          corepack enable
+          corepack enable pnpm
           corepack prepare pnpm@10.12.3 --activate
       - name: Setup Node.js
         uses: actions/setup-node@v4

@@ -31,7 +31,7 @@ jobs:
 
       - name: Add PNPM
         run: |
-          corepack enable
+          corepack enable pnpm
           corepack prepare pnpm@10.12.3 --activate
 
       - name: Setup Node.js environment
