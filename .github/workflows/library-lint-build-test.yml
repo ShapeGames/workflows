@@ -28,9 +28,9 @@ jobs:
           fetch-depth: 2
 
       - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.3 --activate
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -59,9 +59,9 @@ jobs:
           fetch-depth: 2
 
       - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.3 --activate
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
