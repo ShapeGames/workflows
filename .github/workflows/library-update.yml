@@ -29,19 +29,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Add PNPM
-        run: |
-          corepack enable pnpm
-          corepack prepare pnpm@10.12.3 --activate
-
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'pnpm'
+      - name: Enable pnpm
+        run: |
+          corepack enable pnpm
+          corepack prepare pnpm@8.15.9 --activate
+      - name: Get pnpm store directory
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
 
       - name: Install packages
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Configure git
         uses: xiplias/github-git-config-action@v1
