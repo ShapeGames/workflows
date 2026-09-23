@@ -1,0 +1,34 @@
+# One package manager, one lockfile per repository.
+#
+# Mirrors the workspace `guard-workspace.py` rule (yarn repos -> yarn.lock,
+# pnpm repos -> pnpm-lock.yaml). Single source: called by both the client and
+# library build workflows with the manager that repo class uses, rather than
+# repeating the rule in each. Fails the PR on a missing, foreign, or double
+# lockfile.
+on:
+  workflow_call:
+    inputs:
+      manager:
+        description: 'Package manager for this repo class: yarn or pnpm'
+        type: string
+        required: true
+jobs:
+  lockfile-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: one correct lockfile
+        run: |
+          case '${{ inputs.manager }}' in
+            yarn) want=yarn.lock;      wrong=pnpm-lock.yaml ;;
+            pnpm) want=pnpm-lock.yaml; wrong=yarn.lock ;;
+            *) echo "::error::unknown manager '${{ inputs.manager }}' (expected yarn or pnpm)"; exit 1 ;;
+          esac
+          if [ ! -f "$want" ]; then
+            echo "::error::$want is missing; a ${{ inputs.manager }} repo must have it"; exit 1
+          fi
+          if [ -f "$wrong" ]; then
+            echo "::error::$wrong is a foreign lockfile in a ${{ inputs.manager }} repo; remove it"; exit 1
+          fi
+          echo "OK: single $want present"

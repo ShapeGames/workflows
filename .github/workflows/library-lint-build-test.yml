@@ -12,6 +12,10 @@ on:
         type: string
         default: '20'
 jobs:
+  lockfile-guard:
+    uses: ShapeGames/workflows/.github/workflows/lockfile-guard.yml@main
+    with:
+      manager: pnpm
   build_packages:
     timeout-minutes: 10
     name: Build npm package

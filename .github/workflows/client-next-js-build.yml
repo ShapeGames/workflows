@@ -10,6 +10,10 @@ on:
         type: string
         default: 20
 jobs:
+  lockfile-guard:
+    uses: ShapeGames/workflows/.github/workflows/lockfile-guard.yml@main
+    with:
+      manager: yarn
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
