@@ -11,14 +11,23 @@ on:
       node-version:
         type: string
         default: '20'
+      node-versions:
+        description: Optional JSON array of Node.js versions; otherwise use node-version
+        type: string
+        default: ''
 jobs:
   build_packages:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ${{ fromJSON(inputs.node-versions || format('["{0}"]', inputs.node-version)) }}
     timeout-minutes: 10
-    name: Build npm package
+    name: ${{ inputs.node-versions && format('Build npm package (Node {0})', matrix.node-version) || 'Build npm package' }}
     runs-on: 'ubuntu-latest'
     env:
-      TURBO_TOKEN: ${{ secrets.turbo_token }}
-      TURBO_TEAM: ${{ secrets.turbo_team }}
+      # Matrix checks must execute on each runtime rather than replay another Node version.
+      TURBO_TOKEN: ${{ inputs.node-versions == '' && secrets.turbo_token || '' }}
+      TURBO_TEAM: ${{ inputs.node-versions == '' && secrets.turbo_team || '' }}
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
@@ -30,7 +39,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ matrix.node-version }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Get pnpm store directory
@@ -49,12 +58,17 @@ jobs:
       - name: Build package build
         run: pnpm run build
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ${{ fromJSON(inputs.node-versions || format('["{0}"]', inputs.node-version)) }}
     timeout-minutes: 10
-    name: Lint and Test
+    name: ${{ inputs.node-versions && format('Lint and Test (Node {0})', matrix.node-version) || 'Lint and Test' }}
     runs-on: 'ubuntu-latest'
     env:
-      TURBO_TOKEN: ${{ secrets.turbo_token }}
-      TURBO_TEAM: ${{ secrets.turbo_team }}
+      # Matrix checks must execute on each runtime rather than replay another Node version.
+      TURBO_TOKEN: ${{ inputs.node-versions == '' && secrets.turbo_token || '' }}
+      TURBO_TEAM: ${{ inputs.node-versions == '' && secrets.turbo_team || '' }}
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
@@ -66,7 +80,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ matrix.node-version }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Get pnpm store directory
@@ -101,7 +115,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: eslint-reports
+          name: ${{ inputs.node-versions && format('eslint-reports-node-{0}', matrix.node-version) || 'eslint-reports' }}
           path: eslint-reports
           overwrite: true
         continue-on-error: true

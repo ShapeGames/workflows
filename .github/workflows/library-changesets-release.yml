@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version for both registry publish jobs
+        type: string
+        default: '20'
     secrets:
       gh_packages_token:
         required: true
@@ -26,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ inputs.node-version }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Get pnpm store directory
@@ -68,7 +73,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ inputs.node-version }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Get pnpm store directory
