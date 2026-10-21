@@ -25,8 +25,9 @@ jobs:
     name: ${{ inputs.node-versions && format('Build npm package (Node {0})', matrix.node-version) || 'Build npm package' }}
     runs-on: 'ubuntu-latest'
     env:
-      TURBO_TOKEN: ${{ secrets.turbo_token }}
-      TURBO_TEAM: ${{ secrets.turbo_team }}
+      # Matrix checks must execute on each runtime rather than replay another Node version.
+      TURBO_TOKEN: ${{ inputs.node-versions == '' && secrets.turbo_token || '' }}
+      TURBO_TEAM: ${{ inputs.node-versions == '' && secrets.turbo_team || '' }}
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
@@ -65,8 +66,9 @@ jobs:
     name: ${{ inputs.node-versions && format('Lint and Test (Node {0})', matrix.node-version) || 'Lint and Test' }}
     runs-on: 'ubuntu-latest'
     env:
-      TURBO_TOKEN: ${{ secrets.turbo_token }}
-      TURBO_TEAM: ${{ secrets.turbo_team }}
+      # Matrix checks must execute on each runtime rather than replay another Node version.
+      TURBO_TOKEN: ${{ inputs.node-versions == '' && secrets.turbo_token || '' }}
+      TURBO_TEAM: ${{ inputs.node-versions == '' && secrets.turbo_team || '' }}
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
