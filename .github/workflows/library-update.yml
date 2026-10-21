@@ -3,6 +3,10 @@ name: Check for library template updates
 on:
   workflow_call:
     inputs:
+      node-version:
+        description: Node.js version for template updates
+        type: string
+        default: '20'
       script:
         required: true
         type: string
@@ -32,7 +36,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ inputs.node-version }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Get pnpm store directory
