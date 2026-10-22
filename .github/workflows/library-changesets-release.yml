@@ -5,6 +5,14 @@ on:
         description: Node.js version for both registry publish jobs
         type: string
         default: '20'
+      kambi-build-command:
+        description: Build command for the Kambi Artifactory publish job
+        type: string
+        default: 'pnpm run build'
+      force-kambi-publish:
+        description: Run the Kambi publish job after a prior GitHub Packages release
+        type: boolean
+        default: false
     secrets:
       gh_packages_token:
         required: true
@@ -59,7 +67,7 @@ jobs:
   publish-kambi:
     name: Publish to Kambi Artifactory
     needs: release
-    if: needs.release.outputs.published == 'true'
+    if: needs.release.outputs.published == 'true' || inputs.force-kambi-publish
     runs-on: [shape-games-kambi-hosted-debian, dedicated-shape-games]
     env:
       GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -97,7 +105,52 @@ jobs:
           echo "always-auth=true" >> .npmrc
 
       - name: Build
-        run: pnpm run build
+        run: ${{ inputs.kambi-build-command }}
 
       - name: Publish to Kambi Artifactory
         run: pnpm run release
+
+      - name: Verify Kambi package metadata
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { execFileSync } = require('node:child_process');
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const registry = 'https://artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/';
+          const packageDirectory = path.join(process.cwd(), 'packages');
+          let checked = 0;
+
+          for (const directory of fs.readdirSync(packageDirectory, { withFileTypes: true })) {
+            if (!directory.isDirectory()) continue;
+            const manifestPath = path.join(packageDirectory, directory.name, 'package.json');
+            if (!fs.existsSync(manifestPath)) continue;
+            const source = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            if (source.private || !source.name || !source.version) continue;
+
+            const args = [
+              'view',
+              `${source.name}@${source.version}`,
+              'version',
+              'engines',
+              '--json',
+              `--registry=${registry}`,
+              ...(source.name.startsWith('@') ? [`--${source.name.split('/')[0]}:registry=${registry}`] : []),
+            ];
+            let metadata;
+            try {
+              metadata = JSON.parse(execFileSync('npm', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
+            } catch {
+              throw new Error(`Kambi metadata query failed for ${source.name}@${source.version}`);
+            }
+
+            assert.equal(metadata.version, source.version, `Published version mismatch for ${source.name}`);
+            assert.deepStrictEqual(metadata.engines, source.engines, `Published engines mismatch for ${source.name}`);
+            console.log(`${source.name}@${source.version}: engines ${JSON.stringify(metadata.engines)}`);
+            checked++;
+          }
+
+          assert.ok(checked > 0, 'No public package manifests were found under packages/*');
+          console.log(`Verified Kambi metadata for ${checked} package(s).`);
+          NODE
