@@ -144,6 +144,8 @@ jobs:
             } catch {
               throw new Error(`Kambi metadata query failed for ${source.name}@${source.version}`);
             }
+            // npm view returns only the version string when the package has no engines field.
+            if (typeof metadata === 'string') metadata = { version: metadata };
 
             assert.equal(metadata.version, source.version, `Published version mismatch for ${source.name}`);
             assert.deepStrictEqual(metadata.engines, source.engines, `Published engines mismatch for ${source.name}`);
