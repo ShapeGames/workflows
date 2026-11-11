@@ -94,24 +94,29 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
 
       - name: Install dependencies
+        id: install
         run: pnpm install --frozen-lockfile
 
+      # Lint, Build, Type check and Test each report on their own, so one failure doesn't hide another.
+      # Steps that need the previous step's output still skip when it failed.
       - name: Lint
         # With CI=true, sg-library-scripts writes ESLint output to a file instead of the log.
-        # --log-prefix=none keeps file paths intact for setup-node's ESLint annotations.
+        # --log-prefix=none keeps file paths intact for setup-node's ESLint annotations
+        # (tsc prints package-relative paths, so type errors show in the log but don't annotate the file).
         run: pnpm run lint --log-prefix=none
         env:
           CI: false
 
       - name: Build
-        if: ${{ !cancelled() }}
+        id: build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: pnpm run build
 
       # Runs after Build: the typecheck task does not depend on ^build, and packages read sibling packages' dist.
       - name: Type check
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: pnpm run typecheck --log-prefix=none
 
       - name: Test
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: pnpm run test
