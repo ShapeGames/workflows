@@ -97,31 +97,21 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm run lint
-        continue-on-error: true
-
-      - name: Merge lint reports
-        run: jq -s '[.[]]|flatten' eslint-reports/*.json &> eslint-reports/eslint_report.json
-        continue-on-error: true
-
-      - name: Annotate Code Linting Results
-        uses: ataylorme/eslint-annotate-action@1.2.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          report-json: './eslint-reports/eslint_report.json'
-        continue-on-error: true
-
-      - name: Upload ESLint report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.node-versions && format('eslint-reports-node-{0}', matrix.node-version) || 'eslint-reports' }}
-          path: eslint-reports
-          overwrite: true
-        continue-on-error: true
+        # With CI=true, sg-library-scripts writes ESLint output to a file instead of the log.
+        # --log-prefix=none keeps file paths intact for setup-node's ESLint annotations.
+        run: pnpm run lint --log-prefix=none
+        env:
+          CI: false
 
       - name: Build
+        if: ${{ !cancelled() }}
         run: pnpm run build
 
+      # Runs after Build: the typecheck task does not depend on ^build, and packages read sibling packages' dist.
+      - name: Type check
+        if: ${{ !cancelled() }}
+        run: pnpm run typecheck --log-prefix=none
+
       - name: Test
+        if: ${{ !cancelled() }}
         run: pnpm run test
