@@ -1,0 +1,152 @@
+name: Kambi publish
+
+# Publishes the workspace packages matched by a pnpm --filter selector to Kambi Artifactory
+# and verifies their metadata. Versions that already exist on Kambi are skipped by pnpm.
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version
+        type: string
+        default: '24.22.1'
+      ref:
+        description: Commit SHA or tag to publish from (defaults to github.sha)
+        type: string
+        default: ''
+      build-command:
+        description: Build command run before publishing
+        type: string
+        default: 'pnpm run build'
+      filter:
+        description: pnpm --filter selector for the packages to publish, e.g. ./packages/engine/**
+        type: string
+        required: true
+    secrets:
+      gh_token:
+        required: true
+      gh_packages_token:
+        required: true
+      kambi_artifactory_api_key:
+        required: true
+
+jobs:
+  publish:
+    name: Publish to Kambi Artifactory
+    runs-on: [shape-games-kambi-hosted-debian, dedicated-shape-games]
+    env:
+      GITHUB_TOKEN: ${{ secrets.gh_token }}
+      NPM_TOKEN: ${{ secrets.gh_packages_token }}
+      NPM_TOKEN_KAMBI: ${{ secrets.kambi_artifactory_api_key }}
+      NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
+      KAMBI_REGISTRY: https://artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/
+      FILTER: ${{ inputs.filter }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Get pnpm store directory
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup NPM config for Kambi registry
+        run: |
+          echo "//artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/:_authToken=${NPM_TOKEN_KAMBI}" > .npmrc
+          echo "registry=${KAMBI_REGISTRY}" >> .npmrc
+          echo "always-auth=true" >> .npmrc
+
+      - name: Build
+        run: ${{ inputs.build-command }}
+
+      - name: Select packages
+        id: select
+        run: |
+          pnpm -r --filter "$FILTER" ls --depth -1 --json > "$RUNNER_TEMP/kambi-ls.json"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const registry = process.env.KAMBI_REGISTRY;
+          const normalize = (url) => url.replace(/\/+$/, '');
+          const raw = fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'kambi-ls.json'), 'utf8').trim();
+          const packages = (raw ? JSON.parse(raw) : [])
+            .filter((pkg) => !pkg.private)
+            .map((pkg) => ({ name: pkg.name, version: pkg.version, path: pkg.path }));
+
+          const foreign = packages.filter((pkg) => {
+            const manifest = JSON.parse(fs.readFileSync(path.join(pkg.path, 'package.json'), 'utf8'));
+            const target = manifest.publishConfig?.registry;
+            if (target && normalize(target) !== normalize(registry)) {
+              console.log(`::error::${pkg.name} has publishConfig.registry=${target}, which would override the Kambi registry`);
+              return true;
+            }
+            return false;
+          });
+          if (foreign.length) process.exit(1);
+
+          fs.writeFileSync(path.join(process.env.RUNNER_TEMP, 'kambi-packages.json'), JSON.stringify(packages, null, 2));
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `count=${packages.length}\n`);
+          if (!packages.length) console.log(`No public packages match filter "${process.env.FILTER}"; nothing to publish.`);
+          for (const pkg of packages) console.log(`Selected ${pkg.name}@${pkg.version} (${pkg.path})`);
+          NODE
+
+      - name: Publish to Kambi Artifactory
+        if: steps.select.outputs.count != '0'
+        # pnpm -r publish skips versions that already exist on the registry (https://pnpm.io/cli/publish).
+        run: pnpm -r --filter "$FILTER" publish --no-git-checks --registry "$KAMBI_REGISTRY"
+
+      - name: Verify Kambi package metadata
+        if: steps.select.outputs.count != '0'
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { execFileSync } = require('node:child_process');
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const registry = process.env.KAMBI_REGISTRY;
+          const packages = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'kambi-packages.json'), 'utf8'));
+
+          for (const pkg of packages) {
+            const source = JSON.parse(fs.readFileSync(path.join(pkg.path, 'package.json'), 'utf8'));
+            const args = [
+              'view',
+              `${source.name}@${source.version}`,
+              'version',
+              'engines',
+              '--json',
+              `--registry=${registry}`,
+              ...(source.name.startsWith('@') ? [`--${source.name.split('/')[0]}:registry=${registry}`] : []),
+            ];
+            let metadata;
+            try {
+              metadata = JSON.parse(execFileSync('npm', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
+            } catch {
+              throw new Error(`Kambi metadata query failed for ${source.name}@${source.version}`);
+            }
+            // npm view returns only the version string when the package has no engines field.
+            if (typeof metadata === 'string') metadata = { version: metadata };
+
+            assert.equal(metadata.version, source.version, `Published version mismatch for ${source.name}`);
+            assert.deepStrictEqual(metadata.engines, source.engines, `Published engines mismatch for ${source.name}`);
+            console.log(`${source.name}@${source.version}: engines ${JSON.stringify(metadata.engines)}`);
+          }
+
+          console.log(`Verified Kambi metadata for ${packages.length} package(s).`);
+          NODE
