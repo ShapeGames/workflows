@@ -44,3 +44,31 @@ The default graphite width of 10mm is always used for performance reasons.
 <td>Major Release</td>
 </tr>
 </table>
+
+## Kambi publish (`kambi-publish.yml`)
+
+Builds and publishes the packages matched by `filter` to Kambi Artifactory, then verifies their `version` and `engines` there.
+
+| Input / secret | Default | Description |
+| --- | --- | --- |
+| `ref` | _required_ | Release commit SHA that carries the new versions (not a branch name) |
+| `filter` | _required_ | pnpm `--filter` selector, e.g. `./packages/engine/**` |
+| `node-version` | `24.22.1` | Node.js version |
+| `build-command` | `pnpm -r --filter "$FILTER" run build` | Command run before publishing |
+| secret `gh_packages_token` | _required_ | GitHub Packages token (`NPM_TOKEN`), used only by `pnpm install` |
+| secret `kambi_artifactory_api_key` | _required_ | Kambi Artifactory token, used only for publish and verify |
+
+If the Kambi publish fails, re-run the failed job; do not wait for the next release.
+
+```yaml
+jobs:
+  publish-kambi:
+    needs: release
+    uses: ShapeGames/workflows/.github/workflows/kambi-publish.yml@<commit-sha>
+    with:
+      ref: ${{ needs.release.outputs.sha }}
+      filter: './packages/engine/**'
+    secrets:
+      gh_packages_token: ${{ secrets.GH_PACKAGES_TOKEN }}
+      kambi_artifactory_api_key: ${{ secrets.KAMBI_ARTIFACTORY_API_KEY }}
+```

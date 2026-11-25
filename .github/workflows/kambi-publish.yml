@@ -1,0 +1,97 @@
+name: Kambi publish
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Release commit SHA that carries the new versions (not a branch name)
+        type: string
+        required: true
+      filter:
+        description: pnpm --filter selector, e.g. ./packages/engine/**
+        type: string
+        required: true
+      node-version:
+        description: Node.js version
+        type: string
+        default: '24.22.1'
+      build-command:
+        description: Build command run before publishing
+        type: string
+        default: 'pnpm -r --filter "$FILTER" run build'
+    secrets:
+      gh_packages_token:
+        required: true
+      kambi_artifactory_api_key:
+        required: true
+
+jobs:
+  publish:
+    name: Publish to Kambi Artifactory
+    runs-on: [shape-games-kambi-hosted-debian, dedicated-shape-games]
+    env:
+      NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
+      KAMBI_REGISTRY: https://artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/
+      FILTER: ${{ inputs.filter }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Get pnpm store directory
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NPM_TOKEN: ${{ secrets.gh_packages_token }}
+
+      - name: Build
+        run: ${{ inputs.build-command }}
+
+      # Written after install and build so no package script can read the Kambi token.
+      - name: Setup NPM config for Kambi registry
+        run: |
+          echo "//artifactory.services.kambi.com/artifactory/api/npm/npm-shapegames/:_authToken=${NPM_TOKEN_KAMBI}" > .npmrc
+          echo "registry=${KAMBI_REGISTRY}" >> .npmrc
+        env:
+          NPM_TOKEN_KAMBI: ${{ secrets.kambi_artifactory_api_key }}
+
+      # pnpm skips private packages and versions already on Kambi, so re-running is safe.
+      - name: Publish to Kambi Artifactory
+        run: pnpm -r --filter "$FILTER" --fail-if-no-match publish --no-git-checks --registry "$KAMBI_REGISTRY"
+
+      - name: Verify Kambi package metadata
+        run: |
+          pnpm -r --filter "$FILTER" --workspace-concurrency=1 exec node -e '
+            const p = require("./package.json"), r = process.env.KAMBI_REGISTRY;
+            if (p.private) process.exit(0);
+            const id = `${p.name}@${p.version}`;
+            const args = ["view", id, "version", "engines", "--json", `--registry=${r}`];
+            if (p.name.startsWith("@")) args.push(`--${p.name.split("/")[0]}:registry=${r}`);
+            const out = require("node:child_process").spawnSync("npm", args, { encoding: "utf8" });
+            if (out.status) throw new Error(`npm view ${id} failed:\n${out.stderr}`);
+            let m = JSON.parse(out.stdout || "{}"); // npm prints a bare version string when there are no engines
+            if (typeof m === "string") m = { version: m };
+            require("node:assert").deepStrictEqual({ version: m.version, engines: m.engines }, { version: p.version, engines: p.engines }, `${id} on Kambi does not match package.json`);
+            console.log(`${id} verified on Kambi`);
+          '
+
+      - name: Remove Kambi NPM config
+        if: always()
+        run: git checkout -- .npmrc 2>/dev/null || rm -f .npmrc
