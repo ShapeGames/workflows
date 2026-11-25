@@ -47,25 +47,28 @@ The default graphite width of 10mm is always used for performance reasons.
 
 ## Kambi publish (`kambi-publish.yml`)
 
-Reusable workflow that publishes only the workspace packages matched by a pnpm `--filter` selector to Kambi Artifactory, then verifies their `version` and `engines` on Kambi. Versions that already exist on Kambi are skipped, private packages are ignored, and the job fails before publishing if a matched package sets a `publishConfig.registry` other than Kambi. If nothing matches, it logs that and succeeds.
+Reusable workflow that builds and publishes only the workspace packages matched by a pnpm `--filter` selector to Kambi Artifactory, then checks each package's `version` and `engines` on Kambi. pnpm skips private packages and versions that already exist; a filter that matches nothing fails the job. The Kambi token is written to `.npmrc` only after install and build, and the file is removed at the end.
 
-| Input | Default | Description |
+| Input / secret | Default | Description |
 | --- | --- | --- |
+| `ref` | _required_ | The commit SHA to publish from, i.e. the release commit that carries the new versions (not a branch name) |
 | `filter` | _required_ | pnpm `--filter` selector, e.g. `./packages/engine/**` |
-| `ref` | `github.sha` | Commit SHA or tag to publish from |
 | `node-version` | `24.22.1` | Node.js version |
-| `build-command` | `pnpm run build` | Command run before publishing |
+| `build-command` | `pnpm -r --filter "$FILTER" run build` | Command run before publishing |
+| secret `gh_packages_token` | _required_ | GitHub Packages token (`NPM_TOKEN`), used only by `pnpm install` |
+| secret `kambi_artifactory_api_key` | _required_ | Kambi Artifactory token, used only for publish and verify |
 
-Secrets: `gh_token`, `gh_packages_token`, `kambi_artifactory_api_key`.
+If the Kambi publish fails, re-run the failed job; do not wait for the next release.
 
 ```yaml
 jobs:
   publish-kambi:
-    uses: ShapeGames/workflows/.github/workflows/kambi-publish.yml@main
+    needs: release
+    uses: ShapeGames/workflows/.github/workflows/kambi-publish.yml@<commit-sha>
     with:
+      ref: ${{ needs.release.outputs.sha }}
       filter: './packages/engine/**'
     secrets:
-      gh_token: ${{ secrets.GITHUB_TOKEN }}
       gh_packages_token: ${{ secrets.GH_PACKAGES_TOKEN }}
       kambi_artifactory_api_key: ${{ secrets.KAMBI_ARTIFACTORY_API_KEY }}
 ```
