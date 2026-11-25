@@ -57,7 +57,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --filter "$FILTER..."
         env:
           NPM_TOKEN: ${{ secrets.gh_packages_token }}
 
