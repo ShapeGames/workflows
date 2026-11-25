@@ -23,12 +23,15 @@ on:
         required: true
       git_email:
         required: true
+      gh_packages_token:
+        required: false
 
 jobs:
   run:
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: ${{ secrets.write_github_token }}
+      NODE_AUTH_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

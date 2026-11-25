@@ -31,6 +31,7 @@ jobs:
     env:
       GH_PACKAGES_TOKEN: ${{ secrets.gh_packages_token }}
       NPM_TOKEN: ${{ secrets.gh_packages_token }}
+      NODE_AUTH_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -74,6 +75,7 @@ jobs:
       NPM_TOKEN_KAMBI: ${{ secrets.kambi_artifactory_api_key }}
       NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
       NPM_TOKEN: ${{secrets.gh_packages_token}}
+      NODE_AUTH_TOKEN: ${{ secrets.gh_packages_token }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
