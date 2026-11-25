@@ -47,11 +47,11 @@ The default graphite width of 10mm is always used for performance reasons.
 
 ## Kambi publish (`kambi-publish.yml`)
 
-Reusable workflow that builds and publishes only the workspace packages matched by a pnpm `--filter` selector to Kambi Artifactory, then checks each package's `version` and `engines` on Kambi. pnpm skips private packages and versions that already exist; a filter that matches nothing fails the job. The Kambi token is written to `.npmrc` only after install and build, and the file is removed at the end.
+Builds and publishes the packages matched by `filter` to Kambi Artifactory, then verifies their `version` and `engines` there.
 
 | Input / secret | Default | Description |
 | --- | --- | --- |
-| `ref` | _required_ | The commit SHA to publish from, i.e. the release commit that carries the new versions (not a branch name) |
+| `ref` | _required_ | Release commit SHA that carries the new versions (not a branch name) |
 | `filter` | _required_ | pnpm `--filter` selector, e.g. `./packages/engine/**` |
 | `node-version` | `24.22.1` | Node.js version |
 | `build-command` | `pnpm -r --filter "$FILTER" run build` | Command run before publishing |
